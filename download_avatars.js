@@ -7,9 +7,9 @@ var repo = process.argv[3];
 console.log("Welcome to the Github avatar downloader!");
 
 //2 Function
-function getRepoContributors(owner, repo, cb){
+function getRepoContributors(repoOwner, repoName, cb){
   var options = {
-    url: "https://api.github.com/repos/" + owner + '/' + repo + "/contributors",
+    url: "https://api.github.com/repos/" + repoOwner + '/' + repoName + "/contributors",
     headers: {
       'User-Agent': 'request',
       'Authorization': "token " + token.GITHUB_TOKEN
@@ -23,13 +23,18 @@ function getRepoContributors(owner, repo, cb){
       console.log("You must give 2 arguments")
     }else{
       var toObject = JSON.parse(body);
+      console.log(toObject.length);
+      if (toObject.length === undefined){
+        console.log("What you are trying to get does not exist!")
+      }else{
       cb(err, toObject);
+      }
     }
   })
 };
 
 //1 Starting point                      //5 callback coming from number 4
-getRepoContributors("jquery", "jquery", function(err, result){
+getRepoContributors(owner, repo, function(err, result){
   for(var key in result){
     downloadImageByURL(result[key].avatar_url, "avatars/" + result[key].login + ".png")
   }
